@@ -1,0 +1,146 @@
+@extends('adminlte::page')
+@section('title', 'Tambah Soal')
+@section('content_header')
+    <div class="card">
+        <div class="card-body">
+            <h1>Tambah Soal</h1>
+        </div>
+    </div>
+@endsection @section('content')
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Form Tambah Soal</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form role="form" action="{{ route('tambahsoal.store') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="box-body">
+                        @if ($message = Session::get('success'))
+                            <div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+                                </button>
+                                {!! $message !!}
+                            </div>
+                        @endif
+                        <div class="form-group">
+                            <label for="judul">Isi Soal</label>
+                            <input type="text" class="form-control" id="soal" placeholder="Masukkan Isi Soal" name="soal">
+                        </div>
+                        <div class="form-group">
+                            <label for="ringkasan">Kelas</label>
+                            <select name="kelas" id="kelas" class="form-control">
+                                <option selected="selected">Pilih Kelas</option>
+                                    @foreach ($kls as $mpl)
+                                        <option value="{{ $mpl->id }}">{{ $mpl->nama_kelas }}</option>
+                                    @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ringkasan">Mapel</label>
+                            <select name="mapel" id="mapel" class="form-control">
+                                <option selected="selected">Pilih Mata Pelajaran</option>
+                                @foreach ($mapel as $mpl)
+                                    <option value="{{ $mpl->id }}">{{ $mpl->mata_pelajaran }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ringkasan">Materi</label>
+                            <select name="materi" id="materi" class="form-control">
+                                <option selected="selected">Pilih Materi</option>
+                                @foreach ($materi as $mpl)
+                                    <option value="{{ $mpl->id }}">{{ $mpl->nama_materi }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                            <div class="form-group">
+                                <label for="option1">Jawaban A</label>
+                                <input type="text" class="form-control" id="jawabanA" placeholder="Masukkan opsi jawaban"
+                                       name="jawabanA" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="option1">Jawaban B</label>
+                                <input type="text" class="form-control" id="jawabanB" placeholder="Masukkan opsi jawaban"
+                                       name="jawabanB" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="option1">Jawaban C</label>
+                                <input type="text" class="form-control" id="jawabanC" placeholder="Masukkan opsi jawaban"
+                                       name="jawabanC" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="option1">Jawaban D</label>
+                                <input type="text" class="form-control" id="jawabanD" placeholder="Masukkan opsi jawaban"
+                                       name="jawabanD" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="option1">Jawaban</label>
+                                <input type="text" class="form-control" id="jawaban" placeholder="Masukkan opsi jawaban"
+                                       name="jawaban" autocomplete="off">
+                            </div>
+                    </div>
+                    <!-- /.box-body -->
+
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">TAMBAH</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('js')
+    <script>
+        // $(function() {
+        //     $("#kategori").select2();
+        // });
+
+        $('#kelas').on('change', function (e) {
+            if($("#kelas").val() > 0) {
+                $.ajax({
+                    type:'POST',
+                    dataType: 'json',
+                    url:'{{ url("/ajaxRequest") }}',
+                    data:{
+                        _token: "{{ csrf_token() }}",
+                        id_kelas:$("#kelas").val()
+                    },
+                    success:function(data){
+                        $("#mapel").empty();
+                        $.each(data, function(index, item) {
+                            $.each(item, function (index2, val) {
+                                $('#mapel').append($('<option>', { value : val.id}).text(val.mata_pelajaran));
+                            })
+                        })
+                    }
+                });
+            }
+        });
+
+        // $('#mapel').on('change', function (e) {
+        //     if($("#mapel").val() > 0) {
+        //         $.ajax({
+        //             type:'POST',
+        //             dataType: 'json',
+        //             url:'{{ url("/ajaxRequest1") }}',
+        //             data:{
+        //                 _token: "{{ csrf_token() }}",
+        //                 id_mapel:$("#mapel").val()
+        //             },
+        //             success:function(data){
+        //                 $("#materi").empty();
+        //                 $.each(data, function(index, item) {
+        //                     $.each(item, function (index2, val) {
+        //                         $('#materi').append($('<option>', { value : val.id}).text(val.nama_materi));
+        //                     })
+        //                 })
+        //             }
+        //         });
+        //     }
+        // });
+    </script>
+@stop
